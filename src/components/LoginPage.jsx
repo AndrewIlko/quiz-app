@@ -1,16 +1,18 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const LoginPage = () => {
   const [user, setUser] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const submitHandler = async (e) => {
-    // e.preventDefault();
     await axios
       .post("http://localhost:5000/login", { email, password })
       .then((res) => sessionStorage.setItem("token", res.data));
+    navigate("/");
   };
   return (
     <>
