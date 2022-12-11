@@ -1,11 +1,9 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import axios from "axios";
-
-import router from "./router/index.js";
+import jwt from "jsonwebtoken";
 
 const app = express();
 mongoose.set("strictQuery", false);
@@ -13,11 +11,13 @@ dotenv.config({ path: "../../.env" });
 
 app.use(cors());
 app.use(express.json());
-app.use(cookieParser());
-app.use("/api", router);
+
+import userSchema from "./module/user-module.js";
+import { authToken } from "./middleware/authToken.js";
 //CONSTs
 const PORT = process.env.PORT;
 const DB_URL = process.env.DB_URL;
+const SECRET_TOKEN = process.env.SECRET_TOKEN;
 
 const steamResp = async ({ gun, name, wear }) => {
   let data = null;
@@ -33,7 +33,6 @@ const steamResp = async ({ gun, name, wear }) => {
   }
   return data;
 };
-
 app.get("/skin/:gun/:name/:wear/", async (req, res) => {
   const data = await steamResp(req.params);
   //   .map(
@@ -41,6 +40,46 @@ app.get("/skin/:gun/:name/:wear/", async (req, res) => {
   //       `steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20M${i}A${listingItems[i].asset.id}D2452856983064439746`
   //   );
   res.json(data);
+});
+
+app.post("/registration", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const isExist = await userSchema.findOne({ email });
+    if (isExist) {
+      return res.json({ message: "User with this email already exist" });
+    }
+    const user = new userSchema({ email: email.toLowerCase(), password });
+    await user.save();
+    res.json(user);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await userSchema.findOne({ email });
+    if (!user) {
+      return res.json({ message: "Register first." });
+    }
+    if (user.password != password) {
+      return res.json({ message: "Register first." });
+    }
+    const payload = {
+      id: user._id,
+    };
+    const token = jwt.sign(payload, SECRET_TOKEN, { expiresIn: "24h" });
+
+    res.json(token);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+app.get("/posts", authToken, async (req, res) => {
+  res.json({ user: req.user });
 });
 
 const start = async () => {

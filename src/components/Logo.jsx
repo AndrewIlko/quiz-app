@@ -1,7 +1,11 @@
+import { Link } from "react-router-dom";
+
 const Logo = () => {
   return (
     <>
-      <div className="logo--header">Steam Scraper</div>
+      <div className="logo--header">
+        <Link to="/">Steam Scraper </Link>
+      </div>
     </>
   );
 };

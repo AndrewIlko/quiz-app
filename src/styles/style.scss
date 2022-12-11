@@ -44,6 +44,10 @@ body {
     margin-left: 32px;
     font-size: 24px;
     font-weight: 500;
+    a {
+      text-decoration: none;
+      color: #fff;
+    }
   }
 }
 
@@ -114,5 +118,51 @@ body {
     height: 250px;
     border-radius: 4px;
     background-color: #1c1c24;
+  }
+}
+
+.login-form {
+  &__wrapper {
+    width: 100%;
+    margin-top: 60px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+
+  &__inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    input {
+      padding: 12px 15px;
+      min-width: 250px;
+      border-radius: 4px;
+      border: none;
+      background: #1c1c24;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+      &::placeholder {
+        font-weight: 400;
+        font-size: 16px;
+      }
+    }
+  }
+  &__btn {
+    cursor: pointer;
+    padding: 10px 12px;
+    min-width: 100px;
+    font-weight: 500;
+    color: #fff;
+    background-color: #277ce0;
+    border-radius: 4px;
+    border: none;
   }
 }
