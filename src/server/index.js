@@ -51,7 +51,7 @@ app.post("/registration", async (req, res) => {
     }
     const user = new userSchema({ email: email.toLowerCase(), password });
     await user.save();
-    res.json(user);
+    res.json({ message: "Successfully registered!" });
   } catch (e) {
     console.log(e);
   }
@@ -61,25 +61,24 @@ app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await userSchema.findOne({ email });
-    if (!user) {
-      return res.json({ message: "Register first." });
+    if (!user || user.password != password) {
+      return res.json({ message: "Incorrect username or password." });
     }
-    if (user.password != password) {
-      return res.json({ message: "Register first." });
-    }
+
     const payload = {
       id: user._id,
     };
-    const token = jwt.sign(payload, SECRET_TOKEN, { expiresIn: "24h" });
-
-    res.json(token);
+    const token = jwt.sign(payload, SECRET_TOKEN, { expiresIn: "12h" });
+    res.json({ token: token });
   } catch (e) {
     console.log(e);
   }
 });
 
 app.get("/posts", authToken, async (req, res) => {
-  res.json({ user: req.user });
+  const { _id } = req.user;
+  const user = await userSchema.findById(_id);
+  res.json(user.posts);
 });
 
 const start = async () => {

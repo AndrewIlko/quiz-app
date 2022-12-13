@@ -4,7 +4,7 @@ const Logo = () => {
   return (
     <>
       <div className="logo--header">
-        <Link to="/">Steam Scraper </Link>
+        <Link to="/">Quiz App</Link>
       </div>
     </>
   );

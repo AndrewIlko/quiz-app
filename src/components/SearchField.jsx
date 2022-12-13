@@ -2,7 +2,11 @@ const SearchField = () => {
   return (
     <>
       <form className="header-form">
-        <input className="header-form__input" type="text" />
+        <input
+          className="header-form__input"
+          type="text"
+          placeholder="Enter quiz name ..."
+        />
       </form>
     </>
   );
