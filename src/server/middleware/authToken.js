@@ -2,8 +2,7 @@ import jwt from "jsonwebtoken";
 import userSchema from "../module/user-module.js";
 
 export const authToken = async (req, res, next) => {
-  console.log(req.headers);
-  const token = req.headers["authorization"];
+  const token = req.headers["authorization"]?.split(" ")[1];
   if (!token) return res.json({ message: "No token" });
   const decoded = jwt.verify(token, "mynameisandrew");
   req.user = decoded;

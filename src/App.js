@@ -1,4 +1,4 @@
-import Layout from "./components/Layout";
+import Profile from "./components/ProfileHeader/Profile";
 import Header from "./components/Header";
 import Main from "./components/Main";
 import RegPage from "./components/RegPage";
@@ -8,15 +8,14 @@ import LoginPage from "./components/LoginPage";
 const App = () => {
   return (
     <>
-      <Layout>
-        <Header />
+      <Header />
+      <Main>
         <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/register" element={<div>Register page</div>} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registration" element={<RegPage />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
-      </Layout>
+      </Main>
     </>
   );
 };

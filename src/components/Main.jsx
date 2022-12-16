@@ -1,41 +1,28 @@
-import { Link, Route, Routes } from "react-router-dom";
-import AboutProjectInfo from "./AboutProjectInfo";
-import ActiveSkin from "./ActiveSkin";
-import ListOfSkins from "./ListOfSkins";
-
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { userActions } from "../features/userReducer";
+import { getUserData } from "../server-functions/getReq.js";
 
-const Main = () => {
-  const isToken = useSelector((state) => state.user.isToken);
-  const [posts, setPosts] = useState([]);
+const Main = ({ children }) => {
+  const token = sessionStorage.getItem("token");
+  const dispatch = useDispatch();
+  const { setData } = userActions;
+
   useEffect(() => {
-    if (isToken) {
+    if (token) {
+      axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
       (async () => {
-        await axios
-          .get("http://localhost:5000/posts", {
-            headers: { authorization: sessionStorage.getItem("token") },
-          })
-          .then((res) => setPosts(res.data));
+        const data = await getUserData();
+        dispatch(setData(data));
       })();
     }
-  });
+  }, []);
 
   return (
     <>
       <main className="main">
-        <li className="posts">
-          {posts.map((post) => {
-            return (
-              <>
-                <ul className="posts__post">{post}</ul>
-              </>
-            );
-          })}
-        </li>
-
-        {isToken ? <h3>Token is available</h3> : <h3>Token is disable</h3>}
+        <div className="wrapper">{children}</div>
       </main>
     </>
   );

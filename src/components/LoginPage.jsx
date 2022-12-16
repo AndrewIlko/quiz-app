@@ -1,30 +1,36 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { userActions } from "../features/userReducer";
-
 import ErrorFlash from "./Error.jsx/ErrorFlash";
+import { getUserData } from "../server-functions/getReq";
 
 const LoginPage = () => {
-  const { setToken } = userActions;
+  const { setToken, setData } = userActions;
+  const { isLoaded, isToken } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isError, setIsError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
 
-  const loginProcessor = ({ token, ...data }) => {
-    setIsLoading(false);
+  const loginProcessor = async ({ token, ...data }) => {
     if (token) {
       dispatch(setToken(true));
       sessionStorage.setItem("token", token);
+      axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
+
+      let info = await getUserData();
+      dispatch(setData(info));
       navigate("/");
     } else {
       setIsError(data.message);
     }
+    setIsLoading(false);
   };
 
   const submitHandler = async (e) => {

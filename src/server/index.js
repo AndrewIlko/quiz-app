@@ -5,10 +5,24 @@ import dotenv from "dotenv";
 import axios from "axios";
 import jwt from "jsonwebtoken";
 
+import bodyParser from "body-parser";
+
 const app = express();
 mongoose.set("strictQuery", false);
 dotenv.config({ path: "../../.env" });
 
+var jsonParser = bodyParser.json({
+  limit: 1024 * 1024 * 20,
+  type: "application/json",
+});
+var urlencodedParser = bodyParser.urlencoded({
+  extended: true,
+  limit: 1024 * 1024 * 20,
+  type: "application/x-www-form-urlencoded",
+});
+
+app.use(jsonParser);
+app.use(urlencodedParser);
 app.use(cors());
 app.use(express.json());
 
@@ -49,7 +63,11 @@ app.post("/registration", async (req, res) => {
     if (isExist) {
       return res.json({ message: "User with this email already exist" });
     }
-    const user = new userSchema({ email: email.toLowerCase(), password });
+    const user = new userSchema({
+      email: email.toLowerCase(),
+      password,
+      image: "",
+    });
     await user.save();
     res.json({ message: "Successfully registered!" });
   } catch (e) {
@@ -75,10 +93,19 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/posts", authToken, async (req, res) => {
+app.get("/get-user", authToken, async (req, res) => {
   const { _id } = req.user;
   const user = await userSchema.findById(_id);
-  res.json(user.posts);
+  res.json(user);
+});
+
+app.post("/profile-image", authToken, async (req, res) => {
+  const { _id } = req.user;
+  const imgUrl = req.body.url;
+  const user = await userSchema.findById(_id);
+  user["image"] = imgUrl;
+  await user.save();
+  res.json({ message: "Image has been saved" });
 });
 
 const start = async () => {

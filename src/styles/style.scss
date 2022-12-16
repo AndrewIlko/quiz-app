@@ -17,15 +17,12 @@ body,
 
 body {
   background-color: #161b22;
-  color: #fff;
 }
 
-.app__wrapper {
+.wrapper {
   max-width: 1280px;
-  width: 98.5%;
-  height: 100vh;
+  width: 100%;
   margin: 0 auto;
-  background-color: #161b22;
 
   display: flex;
   flex-direction: column;
@@ -34,11 +31,11 @@ body {
 .header {
   width: 100%;
   height: 64px;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 25px;
+  color: #fff;
 }
 
 .logo {
@@ -61,16 +58,18 @@ body {
   justify-content: flex-start;
 
   &__input {
-    max-width: 400px;
+    max-width: 350px;
     width: 100%;
     margin-left: 30px;
     padding: 6px 15px;
+    font-size: 14px;
 
-    font-size: 16px;
     border-radius: 4px;
-    border: 2px solid #1c1c24;
-    background: #1c1c24;
+    border: none;
+    outline: none;
     color: #fff;
+    background-color: #0d1117;
+    border: 1px solid #21262d;
   }
 }
 
@@ -85,7 +84,7 @@ body {
   &-btn {
     cursor: pointer;
     font-size: 14px;
-    padding: 10px 20px;
+    padding: 8px 20px;
     border-radius: 4px;
     font-weight: 500;
     color: #fff;
@@ -101,7 +100,7 @@ body {
 
 .about-project__btn {
   cursor: pointer;
-  padding: 10px 15px;
+  padding: 8px 15px;
   font-weight: 500;
   color: #fff;
   font-size: 14px;
@@ -120,7 +119,9 @@ body {
   flex-direction: column;
   width: 100%;
   padding: 0 15px;
-  margin-top: 30px;
+  background-color: #010409;
+  color: #c9d1d9;
+  height: 100vh;
 }
 
 .active-skins {
@@ -150,6 +151,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    color: #fff;
   }
   display: flex;
   flex-direction: column;
@@ -259,34 +261,82 @@ body {
   }
 }
 
-.profile-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 6px;
-  background-color: #1c1c24;
-  display: flex;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  color: rgb(255, 255, 255, 0.3);
-  border: 1px solid rgb(255, 255, 255, 0.1);
+.header-profile {
+  position: relative;
+  margin-right: 15px;
+  cursor: pointer;
+
+  &__icon {
+    user-select: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    background-color: #0d1117;
+    border: 1px solid #21262d;
+    justify-content: center;
+    font-size: 21px;
+    background-position: center;
+    background-size: cover;
+  }
+  &__popup {
+    font-size: 14px;
+    position: absolute;
+    right: 0;
+    width: 180px;
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    padding: 4px 0;
+    border-radius: 6px;
+    &-user {
+      padding: 8px 16px;
+      color: #c9d1d9;
+    }
+    &-signOut {
+      padding: 8px 16px;
+      &:hover {
+        background-color: #30363d;
+      }
+    }
+  }
+
+  &__menu {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+
+    a {
+      color: #fff;
+      text-decoration: none;
+    }
+    &-item {
+      padding: 4px 8px 4px 16px;
+      &:hover {
+        background-color: #30363d;
+      }
+    }
+  }
 }
 
-.posts {
+.divider {
   width: 100%;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  margin: 30px 0;
-  &__post {
-    width: 100%;
-    padding: 15px 0;
-    border-radius: 6px;
-    display: flex;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 400;
-    background-color: #1c1c24;
+  height: 0.5px;
+  margin: 5px 0;
+  background-color: #30363d;
+}
+
+.profile {
+  width: 100%;
+  margin-top: 30px;
+
+  &__avatar {
+    width: 200px;
+    height: 200px;
+    background-color: #0d1117;
+    border-radius: 12px;
+
+    background-position: center;
+    background-size: cover;
   }
 }
