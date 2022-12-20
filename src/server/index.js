@@ -27,6 +27,8 @@ app.use(cors());
 app.use(express.json());
 
 import userSchema from "./module/user-module.js";
+import categorySchema from "./module/category-module.js";
+
 import { authToken } from "./middleware/authToken.js";
 //CONSTs
 const PORT = process.env.PORT;
@@ -106,6 +108,14 @@ app.post("/profile-image", authToken, async (req, res) => {
   user["image"] = imgUrl;
   await user.save();
   res.json({ message: "Image has been saved" });
+});
+
+import testSchema from "./module/quiz-module.js";
+import categoryTests from "./module/category-tests-module.js";
+
+app.get("/quiz-categories", async (req, res) => {
+  const categories = await categorySchema.find();
+  res.json(categories);
 });
 
 const start = async () => {
