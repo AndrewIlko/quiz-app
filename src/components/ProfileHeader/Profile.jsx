@@ -3,11 +3,13 @@ import axios from "axios";
 import ImageUploading from "react-images-uploading";
 import { userActions } from "../../features/userReducer";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const { image } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const { setImage } = userActions;
+  const [quizResults, setQuizResults] = useState(null);
 
   const saveImage = async (url) => {
     await axios
@@ -21,6 +23,22 @@ const Profile = () => {
     dispatch(setImage(url));
     saveImage(url);
   };
+
+  useEffect(() => {
+    (async () => {
+      await axios
+        .get("http://localhost:5000/quiz-results", {
+          headers: {
+            authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => res.data)
+        .then((res) => {
+          console.log(res);
+          setQuizResults(res);
+        });
+    })();
+  }, []);
 
   return (
     <>
@@ -39,6 +57,27 @@ const Profile = () => {
             )}
           </ImageUploading>
         </div>
+        <ul className="profile-results">
+          {quizResults &&
+            quizResults.map(({ name, result, optionsCount, id }) => {
+              return (
+                <>
+                  <li className="profile-results__item">
+                    <div className="profile-results__item-title">{name}</div>
+                    <div className="profile-results__item-result">
+                      {result} / {optionsCount}
+                    </div>
+                    <Link
+                      className="profile-results__item-link"
+                      to={`/quiz/${id}`}
+                    >
+                      Link
+                    </Link>
+                  </li>
+                </>
+              );
+            })}
+        </ul>
       </div>
     </>
   );

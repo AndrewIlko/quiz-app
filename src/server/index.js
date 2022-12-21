@@ -28,35 +28,13 @@ app.use(express.json());
 
 import userSchema from "./module/user-module.js";
 import categorySchema from "./module/category-module.js";
+import testSchema from "./module/test-module.js";
 
 import { authToken } from "./middleware/authToken.js";
 //CONSTs
 const PORT = process.env.PORT;
 const DB_URL = process.env.DB_URL;
 const SECRET_TOKEN = process.env.SECRET_TOKEN;
-
-const steamResp = async ({ gun, name, wear }) => {
-  let data = null;
-  try {
-    await axios
-      .get(
-        `https://steamcommunity.com/market/listings/730/${gun}%20%7C%20${name}%20%28${wear}%29/render?start=0&count=5&currency=3&language=english&format=json`
-      )
-      .then((res) => res.data)
-      .then((res) => (data = res.listinginfo));
-  } catch (error) {
-    console.log(error);
-  }
-  return data;
-};
-app.get("/skin/:gun/:name/:wear/", async (req, res) => {
-  const data = await steamResp(req.params);
-  //   .map(
-  //     (id) =>
-  //       `steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20M${i}A${listingItems[i].asset.id}D2452856983064439746`
-  //   );
-  res.json(data);
-});
 
 app.post("/registration", async (req, res) => {
   try {
@@ -110,12 +88,62 @@ app.post("/profile-image", authToken, async (req, res) => {
   res.json({ message: "Image has been saved" });
 });
 
-import testSchema from "./module/quiz-module.js";
-import categoryTests from "./module/category-tests-module.js";
-
 app.get("/quiz-categories", async (req, res) => {
   const categories = await categorySchema.find();
   res.json(categories);
+});
+
+app.get("/quiz-categories/:id", authToken, async (req, res) => {
+  const categoryId = req.params.id;
+  const category = await categorySchema.findById(categoryId);
+  const testIdList = category.tests;
+  let testList = [];
+  for (let id of testIdList) {
+    const test = await testSchema.findById(id);
+    testList.push(test);
+  }
+  const testNameId = testList.map((test) => {
+    return { name: test.testName, id: test._id };
+  });
+  return res.json(testNameId);
+});
+
+app.get("/quiz/:id", async (req, res) => {
+  const id = req.params.id;
+  const test = await testSchema.findById(id);
+  res.json(test);
+});
+
+app.post("/quiz/:id", authToken, async (req, res) => {
+  const { id } = req.params;
+  const quizName = await testSchema.findById(id).testName;
+  const user = await userSchema.findById(req.user._id);
+  const isSaved = user.quizes.find((quiz) => quiz.id == id);
+  if (isSaved) {
+    const result = req.body.result;
+    if (isSaved.result < result) {
+      isSaved.result = result;
+    }
+  } else {
+    user.quizes.push({ name: quizName, id: id, result: req.body.result });
+  }
+  await user.save();
+  res.json({ message: "Your result is saved" });
+});
+
+app.get("/quiz-results", authToken, async (req, res) => {
+  const user = await userSchema.findById(req.user._id);
+  const result = [];
+  for (let quiz of user.quizes) {
+    const object = {};
+    const test = await testSchema.findById(quiz.id);
+    object.name = test.testName;
+    object.result = Number(quiz.result);
+    object.optionsCount = test.quetions.length;
+    object.id = quiz.id;
+    result.push(object);
+  }
+  res.json(result);
 });
 
 const start = async () => {

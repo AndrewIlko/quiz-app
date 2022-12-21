@@ -7,6 +7,7 @@ import LoginPage from "./components/LoginPage";
 import Quiz from "./components/Quiz/Quiz";
 
 import MainPage from "./components/MainPage";
+import CategoryTests from "./components/CategoryTests";
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registration" element={<RegPage />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/quiz-categories/:id" element={<CategoryTests />} />
           <Route path="/quiz/:id" element={<Quiz />} />
         </Routes>
       </Main>
