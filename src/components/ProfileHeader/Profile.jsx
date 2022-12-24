@@ -6,10 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 const Profile = () => {
-  const { image } = useSelector((state) => state.user);
+  const { image, email, bestResult } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const { setImage } = userActions;
   const [quizResults, setQuizResults] = useState(null);
+  const [changeImg, setChangeImg] = useState(false);
 
   const saveImage = async (url) => {
     await axios
@@ -39,11 +40,90 @@ const Profile = () => {
         });
     })();
   }, []);
-
   return (
     <>
       <div className="profile">
-        <div
+        <div className="profile__left-side">
+          <div
+            className="profile__avatar"
+            style={{ backgroundImage: `url('${image}')` }}
+            onMouseEnter={() => {
+              setChangeImg(true);
+            }}
+            onMouseLeave={() => {
+              setChangeImg(false);
+            }}
+          >
+            <ImageUploading
+              onChange={(e) => {
+                onImgUpload(e);
+                setChangeImg(false);
+              }}
+              dataURLKey="url"
+              acceptType={["webp", "png", "jpg"]}
+            >
+              {({ onImageUpload }) => (
+                <div
+                  className="profile__avatar-change"
+                  onClick={onImageUpload}
+                  style={
+                    changeImg
+                      ? { visibility: "visible", opacity: "1" }
+                      : { visibility: "hidden", opacity: "0" }
+                  }
+                >
+                  <div>
+                    <i className="material-icons">photo_camera</i>
+                    <span>Edit</span>
+                  </div>
+                </div>
+              )}
+            </ImageUploading>
+          </div>
+          <div className="profile__info">
+            <div className="row-with-icon">
+              <span className="row-with-icon__icon">📧</span>
+              <span className="row-with-icon__text">
+                <strong>Email:</strong> {email}
+              </span>
+            </div>
+            <div className="row-with-icon">
+              <span className="row-with-icon__icon">😎</span>
+              <span className="row-with-icon__text">
+                <strong>Best result:</strong> {bestResult}%
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className="profile__right-side">
+          <div className="profile-quizes__wrapper">
+            <div className="profile-quizes__title">Your quizes</div>
+            <ul className="profile-quizes__list">
+              {quizResults &&
+                quizResults.map(({ name, result, optionsCount, id }) => {
+                  return (
+                    <>
+                      <li className="profile-quizes__list-item">
+                        <div className="profile-quizes__list-item-title">
+                          {name}
+                        </div>
+                        <div className="profile-quizes__list-item-result">
+                          {result} / {optionsCount}
+                        </div>
+                        <Link
+                          className="profile-quizes__list-item-link"
+                          to={`/quiz/${id}`}
+                        >
+                          Link
+                        </Link>
+                      </li>
+                    </>
+                  );
+                })}
+            </ul>
+          </div>
+        </div>
+        {/* <div
           className="profile__avatar"
           style={{ backgroundImage: `url('${image}')` }}
         >
@@ -77,7 +157,7 @@ const Profile = () => {
                 </>
               );
             })}
-        </ul>
+        </ul> */}
       </div>
     </>
   );

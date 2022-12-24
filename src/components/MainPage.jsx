@@ -34,13 +34,19 @@ const MainPage = () => {
           </div>
         ) : (
           <div className="main-page__categories">
-            {categories.map(({ categoryName, _id }) => {
+            {categories.map(({ categoryName, _id, image }) => {
               return (
                 <Link
                   to={isToken ? `/quiz-categories/${_id}` : "/login"}
                   className="main-page__categories-item"
                 >
-                  <div>{categoryName}</div>
+                  <div
+                    className="main-page__categories-item-img"
+                    style={{ backgroundImage: `url("${image}")` }}
+                  />
+                  <div className="main-page__categories-item-title">
+                    {categoryName}
+                  </div>
                 </Link>
               );
             })}

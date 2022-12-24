@@ -47,6 +47,7 @@ app.post("/registration", async (req, res) => {
       email: email.toLowerCase(),
       password,
       image: "",
+      bestResult: 0,
     });
     await user.save();
     res.json({ message: "Successfully registered!" });
@@ -116,11 +117,14 @@ app.get("/quiz/:id", async (req, res) => {
 
 app.post("/quiz/:id", authToken, async (req, res) => {
   const { id } = req.params;
+  const { result, quetionsCount } = req.body;
   const quizName = await testSchema.findById(id).testName;
   const user = await userSchema.findById(req.user._id);
   const isSaved = user.quizes.find((quiz) => quiz.id == id);
+  if (user.bestResult < (100 / quetionsCount) * result) {
+    user.bestResult = (100 / quetionsCount) * result;
+  }
   if (isSaved) {
-    const result = req.body.result;
     if (isSaved.result < result) {
       isSaved.result = result;
     }

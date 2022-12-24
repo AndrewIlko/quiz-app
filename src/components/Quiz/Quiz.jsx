@@ -34,7 +34,18 @@ const Quiz = () => {
   return (
     <>
       {!data ? (
-        <h1>Loading...</h1>
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fontSize: "18px",
+          }}
+        >
+          Loading...
+        </div>
       ) : !isStarted ? (
         <QuizStart
           setIsStarted={setIsStarted}
@@ -45,20 +56,11 @@ const Quiz = () => {
         <QuizResults result={correctSum} quetionsCount={data.quetions.length} />
       ) : (
         <div className="quiz__wrapper">
-          <h2>
-            {testNumber + 1}/{data.quetions.length}
+          <h2 className="quiz__quetion-counter">
+            Quetion {testNumber + 1}/{data.quetions.length}
           </h2>
-          <h3>{quetion}</h3>
-          <ul
-            style={{
-              listStyle: "none",
-              width: "200px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "5px",
-              marginTop: "15px",
-            }}
-          >
+          <h3 className="quiz__quetion-title">{quetion}</h3>
+          <ul className="quiz__quetion-list">
             {options.map((option) => {
               return (
                 <>
@@ -74,15 +76,18 @@ const Quiz = () => {
             })}
           </ul>
           {selectedOption && (
-            <button
-              className="quiz__btn"
-              onClick={() => {
-                setSelectedOption(null);
-                setTestNumber((prev) => prev + 1);
-              }}
-            >
-              Next
-            </button>
+            <div className="quiz__btn-wrapper">
+              <button
+                className="quiz__btn"
+                onClick={() => {
+                  setSelectedOption(null);
+                  setTestNumber((prev) => prev + 1);
+                }}
+              >
+                Next
+                <i className="material-icons">forward</i>
+              </button>
+            </div>
           )}
         </div>
       )}

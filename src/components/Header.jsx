@@ -8,16 +8,15 @@ const Header = () => {
   const isToken = useSelector((state) => state.user.isToken);
   return (
     <>
-      <div className="wrapper">
-        <header className="header">
-          <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+      <header className="header">
+        <div className="wrapper">
+          <div className="header__content">
             <Logo />
-            <SearchField />
+            {/* <SearchField /> */}
+            {!isToken ? <Login /> : <ProfileHeader />}{" "}
           </div>
-
-          {!isToken ? <Login /> : <ProfileHeader />}
-        </header>
-      </div>
+        </div>
+      </header>
     </>
   );
 };
